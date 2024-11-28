@@ -2,35 +2,33 @@ import React, { useState } from "react";
 
 const Index = () => {
   const [sentence, setSentence] = useState<string>("");
-  const [emotion, setEmotion] = useState<string | null>(null);
+  const [accuracy, setAccuracy] = useState<number | null>(null);
+
   const [error, setError] = useState<string | null>(null);
+  const [modelName, setModelName] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent page reload
 
     setError(null); // Reset errors
-    setEmotion(null); // Reset emotion
+    setAccuracy(null); // Reset emotion
+    setModelName(null);
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/classify-text`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ sentence }),
-        }
-      );
+      const response = await fetch(`http://localhost:8080/api/run`, {
+        method: "GET",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch emotion.");
       }
 
       const data = await response.json();
-      setEmotion(data.emotion); // Set the emotion
-    } catch (err) {
-      setError("An error occurred while processing your request.");
+      console.log(data);
+      setAccuracy(data.accuracy);
+      setModelName(data.model_name);
+    } catch (error) {
+      console.log("An error occurred while processing your request.", error);
     }
   };
 
@@ -53,17 +51,19 @@ const Index = () => {
         </button>
       </form>
       {error && <p className="text-red-600">{error}</p>}
-      {emotion && (
+      {accuracy && (
         <p
           className={`text-lg font-bold p-2 rounded-md ${
-            emotion === "happy"
+            accuracy > 0.5
               ? "bg-green-200 text-green-800"
-              : emotion === "sad"
+              : accuracy < 0.2
               ? "bg-red-200 text-red-800"
               : "bg-gray-200 text-gray-800"
           }`}
         >
-          Emotion: {emotion.toUpperCase()}
+          Accuracy: {accuracy}
+          <br></br>
+          Model Name: {modelName}
         </p>
       )}
     </div>

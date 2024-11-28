@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { data } from "./data";
 
 const Index = () => {
   const [sentence, setSentence] = useState<string>("");
@@ -34,7 +35,9 @@ const Index = () => {
 
   return (
     <div className="p-8 font-sans">
-      <h1 className="text-2xl font-bold mb-4">Emotion Detector</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        Text Classification Using QMSFF
+      </h1>
       <form onSubmit={handleSubmit} className="mb-4">
         <textarea
           value={sentence}
@@ -47,7 +50,7 @@ const Index = () => {
           type="submit"
           className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Analyze Emotion
+          Run the Tests
         </button>
       </form>
       {error && <p className="text-red-600">{error}</p>}
@@ -66,6 +69,25 @@ const Index = () => {
           Model Name: {modelName}
         </p>
       )}
+      <div className="p-4 font-sans">
+        <h1 className="text-2xl font-bold mb-4">Data Table</h1>
+        <table className="min-w-full border-collapse border border-gray-300">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 p-2">Label</th>
+              <th className="border border-gray-300 p-2">Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, index) => (
+              <tr key={index} className="border-b">
+                <td className="border border-gray-300 p-2">{row.label}</td>
+                <td className="border border-gray-300 p-2">{row.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
